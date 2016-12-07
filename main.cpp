@@ -1,3 +1,8 @@
+// ****** Game of Clubs Back-end dev ******
+//
+//  Ayotunde Odejayi 2016 (c)
+// ****************************************
+
 #include <iostream>
 #include <string>
 #include <math.h>
@@ -34,14 +39,21 @@ int main() {
 
             index++;
     }
+    for (int i=0; i<no_years+1; i++){
+        for (int j=0; j<width; j++)
+             file_reader >> real_estate[i][j];
+    }
+    for (int i=0; i<no_years+1; i++){
+        for (int j=0; j<width; j++)
+             file_reader >> ecommerce[i][j];
+    }
+    for (int i=0; i<no_years+1; i++){
+        for (int j=0; j<width; j++)
+             file_reader >> farms[i][j];
+    }
                 
-   // Test
-   for (int i = 0; i<no_years; i++) {
-     for (int j = 0; j< width; j++) {
-       cout << fixed_1[i][j] << " ";
-     }
-   cout << endl;
-   }  
-   
+  // Computations
+ /
+  
   return 0;
 }
