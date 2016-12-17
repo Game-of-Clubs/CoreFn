@@ -10,26 +10,26 @@
 using namespace std;
 
 
-
+void welcome();
 // Set-up parameters
-  const int no_years = 4, no_players = 1, width = 2;
-  const double initial_cash = 100000000.0;
+  const int no_years = 4, width = 2;
+  const double initial_cash = 100.0;
+  int no_players, p1_val, p2_val;
 
 class gameOfClubsPlayer {
   public:
   double valid_input_sum, stock_val, fixed1_val, fixed2_val, fixed3_val, fixed4_val, real_estate_val, ecommerce_val, farms_val;
   double valuation_results[no_years][11];
-  int curr_yr;
+  int curr_yr, pIndex;
   bool cashless;
 
    // constructor
-   gameOfClubsPlayer() {
+   gameOfClubsPlayer(int playerIndex):pIndex(playerIndex) {
     valid_input_sum = 0.0, stock_val = 0.0, fixed1_val = 0.0, fixed2_val = 0.0, fixed3_val = 0.0, fixed4_val = 0.0, real_estate_val = 0.0, ecommerce_val = 0.0, farms_val = 0.0;
     curr_yr = 0, cashless = false;
    }; 
 
   void setup() {
-
    // Initialize valuation_results array
    for (int i =0; i<no_years; i++) {
        for (int j=0; j<11; j++) {
@@ -75,30 +75,32 @@ class gameOfClubsPlayer {
   double stocks[no_years+1][width], fixed_1[no_years][width], fixed_2[no_years-1][width], fixed_3[no_years-2][width], fixed_4[no_years-3][width];
   double real_estate[no_years+1][width], ecommerce[no_years+1][width], farms[no_years+1][width];
 
-  void compute_valuation() {
-  // Sort stocks
-  valuation_results[curr_yr][0] = ((stocks[curr_yr][0]+stocks[curr_yr][1])/100 + 1.0) * stock_val;    
-  valuation_results[curr_yr][1] = ((fixed_1[curr_yr-1][0]+fixed_1[curr_yr-1][1])/100 + 1.0) * fixed1_val;
-  valuation_results[curr_yr][2] = ((fixed_2[curr_yr-1][0]+fixed_2[curr_yr-1][1])/100 + 1.0) * fixed2_val;
-  valuation_results[curr_yr][3] = ((fixed_3[curr_yr-1][0]+fixed_3[curr_yr-1][1])/100 + 1.0) * fixed3_val;    
-  valuation_results[curr_yr][4] = ((fixed_4[curr_yr-1][0]+fixed_4[curr_yr-1][1])/100 + 1.0) * fixed4_val;
-  valuation_results[curr_yr][5] = ((real_estate[curr_yr-1][0]+real_estate[curr_yr-1][1])/100 + 1.0) * real_estate_val;    
-  valuation_results[curr_yr][6] = ((ecommerce[curr_yr-1][0]+ecommerce[curr_yr-1][1])/100 + 1.0) * ecommerce_val;
-  valuation_results[curr_yr][7] = ((farms[curr_yr-1][0]+farms[curr_yr-1][1])/100 + 1.0) * farms_val;    
+  int compute_valuation() {
+      // Sort stocks
+      valuation_results[curr_yr][0] = ((stocks[curr_yr][0]+stocks[curr_yr][1])/100 + 1.0) * stock_val;    
+      valuation_results[curr_yr][1] = ((fixed_1[curr_yr-1][0]+fixed_1[curr_yr-1][1])/100 + 1.0) * fixed1_val;
+      valuation_results[curr_yr][2] = ((fixed_2[curr_yr-1][0]+fixed_2[curr_yr-1][1])/100 + 1.0) * fixed2_val;
+      valuation_results[curr_yr][3] = ((fixed_3[curr_yr-1][0]+fixed_3[curr_yr-1][1])/100 + 1.0) * fixed3_val;    
+      valuation_results[curr_yr][4] = ((fixed_4[curr_yr-1][0]+fixed_4[curr_yr-1][1])/100 + 1.0) * fixed4_val;
+      valuation_results[curr_yr][5] = ((real_estate[curr_yr-1][0]+real_estate[curr_yr-1][1])/100 + 1.0) * real_estate_val;    
+      valuation_results[curr_yr][6] = ((ecommerce[curr_yr-1][0]+ecommerce[curr_yr-1][1])/100 + 1.0) * ecommerce_val;
+      valuation_results[curr_yr][7] = ((farms[curr_yr-1][0]+farms[curr_yr-1][1])/100 + 1.0) * farms_val;    
 
-  for (int i = 0; i<10; i++) 
-      valuation_results[curr_yr][10] += valuation_results[curr_yr][i]; 
+      for (int i = 0; i<10; i++) 
+          valuation_results[curr_yr][10] += valuation_results[curr_yr][i]; 
+
+      return valuation_results[curr_yr][10];
   }  
 
   // Print results
   void print_valuation() {
-    cout << "\n\n***Valuation results for Yr(" <<curr_yr <<") are:*** \nStock Portfolio: N" << valuation_results[curr_yr][0] << " | Fixed Income: N" 
+    cout << "\n\n***Player " << pIndex << " Valuation results for Yr(" <<curr_yr <<") are:*** \nStock Portfolio: N" << valuation_results[curr_yr][0] << " | Fixed Income: N" 
        << valuation_results[curr_yr][2] << " | Fixed Inc 2-yr: N"
        << valuation_results[curr_yr][3] << " | Fixed Inc 3-yr: N" << valuation_results[curr_yr][4] << " | Real Estate: N" 
        << valuation_results[curr_yr][5] << " | VC: e-commerce: N" << valuation_results[curr_yr][6] << " | VC:Farm: N" << valuation_results[curr_yr][7] 
        << "\nLending/Borrowing:  N" 
        << valuation_results[curr_yr][8] << " | Cash: N" << valuation_results[curr_yr][9] 
-       << "\n\nTOTAL: N" << valuation_results[curr_yr][10] << "\n\n";     
+       << "\nTOTAL: N" << valuation_results[curr_yr][10] << "\n";     
      }
   
 
@@ -106,7 +108,7 @@ class gameOfClubsPlayer {
         //showFullScreen();
         bool valid_inp = false;
         string resp;
-  
+        cout << "\nPlayer ("<<pIndex<<")"; 
         do {
             // Reset
             cashless = false;
@@ -193,21 +195,41 @@ class gameOfClubsPlayer {
 
 int main() {
 
-  gameOfClubsPlayer p1, p2;
+  welcome();
+  // TBD: Auto-create multiple instances of gameOfClubsPlayer class
+  /*string players[3]; 
+
+  for (int i=0; i<no_players; i++){
+       players[i] = 'p'+char(i); 
+       cout << players[i];
+  }*/
+
+  gameOfClubsPlayer p1(1), p2(2);
   p1.setup();
   p2.setup();
 
-  for (int yr_iter = no_years; yr_iter>0; yr_iter--) {
-      cout << "*** Year (" << 4-yr_iter << ") ***\n";
+  for (int yr_iter = no_years-3; yr_iter<5; yr_iter++) {
+      cout << "\n\n*** Year (" <<yr_iter<< ") ***\n";
 
       p1.get_user_data();
       p2.get_user_data();
 
-      p1.compute_valuation();
-      p2.compute_valuation();
+      p1_val = p1.compute_valuation();
+      p2_val = p2.compute_valuation();
       
       p1.print_valuation();
       p2.print_valuation();
+      cout << "\n";
+      if (yr_iter<4){ 
+          if (p1_val > p2_val) cout << "Player 1 wins Year "<<yr_iter;
+          else if (p2_val > p1_val) cout << "Player 2 wins Year "<<yr_iter;
+          else cout << "There is a tie in Year"<<yr_iter;
+      } else {
+          if (p1_val > p2_val) cout << "Player 1 wins!"; 
+          else if (p2_val > p1_val) cout << "Player 2 wins!";
+          else cout << "There is a tie!"; 
+      }
+
   }
 
   return 0;
@@ -215,17 +237,14 @@ int main() {
 
 
 
-void setup() {
+void welcome() {
 
    cout << "\n******************************************************************* Welcome to Game of Clubs *************************************************************" << endl;
    cout << fixed << "\nYou have N" << setprecision(1) << initial_cash << " cash available\n";  
-   cout << "\nYour investment options are:\n Stock Portfolio\n Fixed Income: 1yr\n Fixed Income: 2yr\n Fixed Income: 3yr\n Fixed Income: 4yr\n Real Estate\n VC: e-commerce\n VC: Farm\n\n";
+   cout << "\nYour investment options are:\n Stock Portfolio\n Fixed Income: 1yr\n Fixed Income: 2yr\n Fixed Income: 3yr\n Fixed Income: 4yr\n Real Estate\n VC: e-commerce\n VC: Farm";
+   cout << "\n\nEnter 1 through 3 for no. of players (default is 1 player): ";
+   cin >> no_players;
+   if (no_players>3 || no_players<1 || (no_players%2!=0 && no_players%3!=0))
+       no_players  = 1;
 
-    
-  // Debug
-  /*for (int i = 0; i<no_years; i++){
-      for (int j=0; j<width; j++)
-          cout << fixed_2[i][j] << " ";
-      cout << endl;
-  }*/
 }
